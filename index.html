@@ -140,6 +140,9 @@
         flex-direction: column;
         cursor: pointer;
         gap: 6px;
+        background: transparent;
+        border: none;
+        padding: 6px;
       }
 
       .hamburger span {
@@ -147,6 +150,7 @@
         height: 2px;
         background-color: var(--primary-dark);
         transition: all 0.3s ease;
+        display: block;
       }
 
       @media (max-width: 768px) {
@@ -303,19 +307,45 @@
       .bg-light {
         background-color: var(--light-bg);
       }
+
+      /* JS-aware initial states (only applied when JS runs) */
+      .has-js .service-card,
+      .has-js .stat-block,
+      .has-js header .logo {
+        opacity: 0;
+        transform: translateY(30px);
+        will-change: transform, opacity;
+      }
+
+      .has-js [data-parallax] {
+        will-change: transform;
+      }
+
+      /* Text reveal initial state for heading spans */
+      .has-js h1 span,
+      .has-js h2 span {
+        display: inline-block;
+        transform: translateY(100%);
+        will-change: transform, opacity;
+      }
     </style>
   </head>
 
   <body>
+    <script>
+      // Mark document as JS-enabled so CSS can hide for animation (if JS present).
+      document.documentElement.classList.add('has-js');
+    </script>
+
     <!-- ===== HEADER ===== -->
     <header class="py-6 px-8 lg:px-12 flex items-center justify-between">
       <div class="flex items-center gap-3">
-        <img src="./assets/images/logo.svg" alt="Joice Folis Logo" class="logo" />
+        <img src="./assets/images/logo.svg" alt="Joice Folis Logo" class="logo" loading="lazy" decoding="async" />
         <span class="text-xl font-semibold text-primary-dark hidden sm:inline" style="color: var(--primary-dark);">Joice Folis</span>
       </div>
 
       <!-- Navigation -->
-      <nav class="hidden md:flex gap-8 items-center">
+      <nav id="primary-navigation" aria-label="Menu principal" class="hidden md:flex gap-8 items-center">
         <a href="#about" class="text-primary-dark font-medium transition hover:text-accent-gold" style="color: var(--primary-dark);">Sobre</a>
         <a href="#services" class="text-primary-dark font-medium transition hover:text-accent-gold" style="color: var(--primary-dark);">Tratamentos</a>
         <a href="#differentials" class="text-primary-dark font-medium transition hover:text-accent-gold" style="color: var(--primary-dark);">Resultados</a>
@@ -324,11 +354,11 @@
       </nav>
 
       <!-- Hamburger Menu (Mobile) -->
-      <div class="hamburger md:hidden">
+      <button class="hamburger md:hidden" aria-label="Abrir menu" aria-expanded="false" aria-controls="primary-navigation">
         <span></span>
         <span></span>
         <span></span>
-      </div>
+      </button>
     </header>
 
     <!-- ===== MAIN ===== -->
@@ -339,18 +369,25 @@
         <div class="w-full grid grid-cols-1 md:grid-cols-2 gap-0 items-center">
           <!-- Hero Image (Left) -->
           <div class="hidden md:block">
-            <img 
-              src="./assets/images/hero-spa.jpg" 
-              alt="Tratamento estético de luxo" 
-              class="w-full h-screen object-cover hero-image"
-              data-parallax="true"
-            />
+            <picture>
+              <source type="image/webp" srcset="./assets/images/hero-spa-1600.webp 1600w, ./assets/images/hero-spa-1200.webp 1200w, ./assets/images/hero-spa-800.webp 800w" sizes="(min-width: 1024px) 50vw, 100vw">
+              <img
+                src="./assets/images/hero-spa.jpg"
+                alt="Tratamento estético de luxo"
+                class="w-full h-screen object-cover hero-image"
+                data-parallax="true"
+                loading="eager"
+                decoding="async"
+                fetchpriority="high"
+              />
+            </picture>
           </div>
 
           <!-- Hero Text (Right / Full width on mobile) -->
           <div class="px-8 lg:px-16 py-16 md:py-0">
             <h1 class="mb-6 leading-tight">
-              A Arte de Revelar a <span class="accent-gold">Sua Melhor</span> Versão
+              <span>A</span> <span>Arte</span> <span>de</span> <span>Revelar</span> <span>a</span>
+              <span class="accent-gold">Sua</span> <span class="accent-gold">Melhor</span> <span>Versão</span>
             </h1>
             <p class="text-lg mb-8" style="color: var(--text-gray);">
               Tratamentos estéticos de luxo com tecnologia avançada, onde beleza natural e bem-estar se encontram.
@@ -365,19 +402,25 @@
         <div class="max-w-7xl mx-auto grid grid-cols-1 md:grid-cols-2 gap-12 items-center">
           <!-- About Image (Left) -->
           <div class="order-2 md:order-1">
-            <img 
-              src="./assets/images/environment-1.jpg" 
-              alt="Ambiente luxuoso da clínica Joice Folis" 
-              class="w-full rounded-lg"
-            />
+            <picture>
+              <source type="image/webp" srcset="./assets/images/environment-1-1200.webp 1200w, ./assets/images/environment-1-800.webp 800w" sizes="(min-width: 768px) 50vw, 100vw">
+              <img
+                src="./assets/images/environment-1.jpg"
+                alt="Ambiente luxuoso da clínica Joice Folis"
+                class="w-full rounded-lg"
+                data-parallax="false"
+                loading="lazy"
+                decoding="async"
+              />
+            </picture>
           </div>
 
           <!-- About Text (Right) -->
           <div class="order-1 md:order-2">
-            <h2 class="mb-8">Conheca <span class="accent-gold">Joice Folis</span></h2>
-            
+            <h2 class="mb-8"><span>Conheça</span> <span class="accent-gold">Joice Folis</span></h2>
+
             <p>
-              Com mais de 15 anos de experiência no mercado de estética, Joice Folis é referência em tratamentos de alta qualidade que unem beleza natural com tecnologia de ponta.
+              Com mais de 3 anos de experiência no mercado de estética, Joice Folis é referência em tratamentos de alta qualidade que unem beleza natural com tecnologia de ponta.
             </p>
 
             <p>
@@ -408,10 +451,10 @@
 
             <!-- Card 1 -->
             <article class="service-card">
-              <img 
-                src="./assets/images/service-micro.jpg" 
-                alt="Microagulhamento facial"
-              />
+              <picture>
+                <source type="image/webp" srcset="./assets/images/service-micro-800.webp 800w, ./assets/images/service-micro-400.webp 400w" sizes="(min-width: 1024px) 25vw, 50vw">
+                <img src="./assets/images/service-micro.jpg" alt="Microagulhamento facial" data-parallax="true" loading="lazy" decoding="async" />
+              </picture>
               <div class="service-card-content">
                 <h3>Microagulhamento</h3>
                 <p>
@@ -423,10 +466,10 @@
 
             <!-- Card 2 -->
             <article class="service-card">
-              <img 
-                src="./assets/images/service-facial.jpg" 
-                alt="Limpeza facial profunda"
-              />
+              <picture>
+                <source type="image/webp" srcset="./assets/images/service-facial-800.webp 800w, ./assets/images/service-facial-400.webp 400w" sizes="(min-width: 1024px) 25vw, 50vw">
+                <img src="./assets/images/service-facial.jpg" alt="Limpeza facial profunda" data-parallax="true" loading="lazy" decoding="async" />
+              </picture>
               <div class="service-card-content">
                 <h3>Limpeza Facial</h3>
                 <p>
@@ -438,10 +481,10 @@
 
             <!-- Card 3 -->
             <article class="service-card">
-              <img 
-                src="./assets/images/service-lips.jpg" 
-                alt="Preenchimento de lábios"
-              />
+              <picture>
+                <source type="image/webp" srcset="./assets/images/service-lips-800.webp 800w, ./assets/images/service-lips-400.webp 400w" sizes="(min-width: 1024px) 25vw, 50vw">
+                <img src="./assets/images/service-lips.jpg" alt="Preenchimento de lábios" data-parallax="true" loading="lazy" decoding="async" />
+              </picture>
               <div class="service-card-content">
                 <h3>Preenchimento Labial</h3>
                 <p>
@@ -453,10 +496,10 @@
 
             <!-- Card 4 -->
             <article class="service-card">
-              <img 
-                src="./assets/images/service-peeling.jpg" 
-                alt="Peeling químico"
-              />
+              <picture>
+                <source type="image/webp" srcset="./assets/images/service-peeling-800.webp 800w, ./assets/images/service-peeling-400.webp 400w" sizes="(min-width: 1024px) 25vw, 50vw">
+                <img src="./assets/images/service-peeling.jpg" alt="Peeling químico" data-parallax="true" loading="lazy" decoding="async" />
+              </picture>
               <div class="service-card-content">
                 <h3>Peeling Químico</h3>
                 <p>
@@ -477,12 +520,12 @@
           <!-- Stats (Left) -->
           <div class="space-y-12">
             <div class="stat-block">
-              <div class="stat-number">15+</div>
+              <div class="stat-number">3+</div>
               <div class="stat-label">Anos de Experiência</div>
             </div>
 
             <div class="stat-block">
-              <div class="stat-number">2000+</div>
+              <div class="stat-number">20+</div>
               <div class="stat-label">Pacientes Satisfeitos</div>
             </div>
 
@@ -494,10 +537,11 @@
 
           <!-- Environment Image (Right) -->
           <div>
-            <img 
-              src="./assets/images/environment-2.jpg" 
+            <img
+              src="./assets/images/environment-2.jpg"
               alt="Ambiente premium da clínica"
               class="w-full rounded-lg"
+              data-parallax="false"
             />
           </div>
 
@@ -514,18 +558,45 @@
 
           <!-- CTA Buttons -->
           <div class="flex flex-col md:flex-row gap-6 justify-center">
-            <a 
-              href="https://wa.me/5511999999999?text=Ol%C3%A1%21%20Gostaria%20de%20marcar%20uma%20consulta%20de%20tratamento%20est%C3%A9tico%20em%20Joice%20Folis%20Est%C3%A9tica." 
+            <a
+              href="https://wa.me/5511999999999?text=Ol%C3%A1%21%20Gostaria%20de%20marcar%20uma%20consulta%20de%20tratamento%20est%C3%A9tico%20em%20Joice%20Folis%20Est%C3%A9tica."
               target="_blank"
               rel="noopener noreferrer"
               class="btn btn-primary"
             >
               Enviar Mensagem via WhatsApp
             </a>
-            <button class="btn" onclick="alert('Formulário de contato - implementado em Part 6')">
-              Formulário de Contato
-            </button>
+            <a href="#contact-form" class="btn">Formulário de Contato</a>
           </div>
+
+          <!-- Contact Form (Formspree) -->
+          <form id="contact-form" action="https://formspree.io/f/your-form-id" method="POST" class="mt-12 max-w-xl mx-auto text-left bg-white p-8 rounded-lg shadow-sm">
+            <div class="grid grid-cols-1 gap-4">
+              <label class="block">
+                <span class="text-sm font-medium">Nome</span>
+                <input type="text" name="name" required class="mt-1 block w-full border border-gray-200 rounded px-3 py-2" />
+              </label>
+
+              <label class="block">
+                <span class="text-sm font-medium">E-mail</span>
+                <input type="email" name="email" required class="mt-1 block w-full border border-gray-200 rounded px-3 py-2" />
+              </label>
+
+              <label class="block">
+                <span class="text-sm font-medium">Mensagem</span>
+                <textarea name="message" rows="5" required class="mt-1 block w-full border border-gray-200 rounded px-3 py-2"></textarea>
+              </label>
+
+              <input type="hidden" name="_subject" value="Novo contato - Site Joice Folis" />
+              <input type="text" name="_gotcha" style="display:none" />
+
+              <div class="flex justify-center">
+                <button type="submit" class="btn btn-primary">Enviar Mensagem</button>
+              </div>
+
+              <p id="contact-form-status" class="mt-4 text-center text-sm text-gray-600"></p>
+            </div>
+          </form>
         </div>
       </section>
 
@@ -540,7 +611,7 @@
 
           <!-- Column 1: Logo & Description -->
           <div>
-            <img src="./assets/images/logo.svg" alt="Joice Folis Logo" class="logo mb-4" />
+            <img src="./assets/images/logo.svg" alt="Joice Folis Logo" class="logo mb-4" loading="lazy" decoding="async" />
             <p class="mb-4">
               Estética de luxo onde beleza natural e tecnologia avançada se encontram para revelar sua melhor versão.
             </p>
@@ -561,8 +632,8 @@
           <div>
             <h4 class="mb-6" style="color: var(--light-bg);">Contato</h4>
             <p class="mb-4">
-              📞 (11) 9 9999-9999<br>
-              📧 contato@joicefolis.com<br>
+              📞 (11) 9 9999-9999<br />
+              📧 contato@joicefolis.com<br />
               📍 São Paulo, SP
             </p>
             <div class="flex gap-4">
@@ -587,6 +658,22 @@
       </div>
     </footer>
 
+    <!-- Mobile menu toggle script -->
+    <script>
+      document.addEventListener('DOMContentLoaded', () => {
+        const btn = document.querySelector('.hamburger');
+        const nav = document.getElementById('primary-navigation');
+        if (!btn || !nav) return;
+        btn.addEventListener('click', () => {
+          // Toggle visibility on small screens
+          nav.classList.toggle('hidden');
+          // Toggle aria-expanded
+          const expanded = btn.getAttribute('aria-expanded') === 'true';
+          btn.setAttribute('aria-expanded', String(!expanded));
+        });
+      });
+    </script>
+
     <!-- GSAP + Lenis init + animações -->
     <script>
       window.addEventListener('load', () => {
@@ -594,7 +681,7 @@
         const prefersReduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
         if (prefersReduced) return;
 
-        // Certificar que GSAP e ScrollTrigger estão presentes
+        // Certificar que GSAP and ScrollTrigger are present
         if (typeof gsap === 'undefined' || typeof ScrollTrigger === 'undefined') {
           console.warn('GSAP ou ScrollTrigger não encontrados. Animações desativadas.');
           return;
@@ -655,9 +742,11 @@
           const els = gsap.utils.toArray(selector);
           if (!els.length) return;
           els.forEach((el) => {
-            if (!el.dataset._wrapped) {
+            // Only wrap if there are no spans already
+            const hasSpans = el.querySelectorAll('span').length > 0;
+            if (!hasSpans && !el.dataset._wrapped) {
               const words = el.textContent.trim().split(/\s+/);
-              el.innerHTML = words.map(w => `<span aria-hidden="true" style="display:inline-block;">${w}&nbsp;</span>`).join('');
+              el.innerHTML = words.map(w => `<span aria-hidden="true">${w}&nbsp;</span>`).join('');
               el.dataset._wrapped = 'true';
             }
             const spans = el.querySelectorAll('span');
@@ -709,21 +798,23 @@
         textReveal('[data-section="about"] h2', { duration: 0.8, stagger: 0.06 });
 
         // Parallax - imagens dos cards e hero (hero image must have data-parallax or class 'hero-image')
-        parallaxImage('.service-card img', { yPercent: -12, scrub: 1 });
-        parallaxImage('.hero-image[data-parallax], img[data-parallax]', { yPercent: -18, scrub: 1 });
+        parallaxImage('.service-card img[data-parallax="true"]', { yPercent: -12, scrub: 1 });
+        parallaxImage('.hero-image[data-parallax="true"], img[data-parallax="true"]', { yPercent: -18, scrub: 1 });
 
         // Header visual on scroll (adds/removes .scrolled)
         const header = document.querySelector('header');
         if (header) {
           const onScrollHeader = () => {
-            if (window.scrollY > 30) header.classList.add('scrolled');
-            else header.classList.remove('scrolled');
+            if ((lenisInstance && lenisInstance.scroll) ? (lenisInstance.scroll > 30) : (window.scrollY > 30)) {
+              header.classList.add('scrolled');
+            } else {
+              header.classList.remove('scrolled');
+            }
           };
+          // Listen to both
           window.addEventListener('scroll', onScrollHeader);
-          // run once
-          onScrollHeader();
-          // keep sync with Lenis (if present)
           if (lenisInstance) lenisInstance.on('scroll', onScrollHeader);
+          onScrollHeader();
         }
 
         // Optional: small subtle pulse on CTA (uncomment if desired)
@@ -731,6 +822,83 @@
 
         // Clean up function (if needed in SPA)
         // return function destroyAll() { ScrollTrigger.getAll().forEach(st => st.kill()); gsap.globalTimeline.clear(); }
+      });
+    </script>
+
+    <!-- Micro-interactions (GSAP) -->
+    <script>
+      document.addEventListener('DOMContentLoaded', () => {
+        if (typeof gsap === 'undefined') return;
+        const buttons = document.querySelectorAll('.btn, .btn-primary');
+        buttons.forEach(btn => {
+          // Set a sensible initial shadow
+          gsap.set(btn, { boxShadow: '0 4px 12px rgba(0,0,0,0.06)', transformOrigin: 'center' });
+
+          btn.addEventListener('mouseenter', () => {
+            if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+            gsap.to(btn, { scale: 1.03, boxShadow: '0 8px 24px rgba(0,0,0,0.12)', duration: 0.22, ease: 'power1.out' });
+          });
+
+          btn.addEventListener('mouseleave', () => {
+            if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+            gsap.to(btn, { scale: 1, boxShadow: '0 4px 12px rgba(0,0,0,0.06)', duration: 0.4, ease: 'power2.out' });
+          });
+
+          btn.addEventListener('focus', () => {
+            gsap.to(btn, { scale: 1.02, duration: 0.15 });
+          });
+
+          btn.addEventListener('blur', () => {
+            gsap.to(btn, { scale: 1, duration: 0.15 });
+          });
+        });
+      });
+    </script>
+    <script>
+      document.addEventListener('DOMContentLoaded', () => {
+        const form = document.getElementById('contact-form');
+        const status = document.getElementById('contact-form-status');
+        if (form) {
+          form.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            if (!form.action || form.action.includes('your-form-id')) {
+              status.textContent = 'Substitua o atributo action pelo seu endpoint do Formspree (ex: https://formspree.io/f/xxxx).';
+              return;
+            }
+            status.textContent = 'Enviando...';
+            try {
+              const data = new FormData(form);
+              const resp = await fetch(form.action, {
+                method: 'POST',
+                body: data,
+                headers: { 'Accept': 'application/json' }
+              });
+              if (resp.ok) {
+                form.reset();
+                status.textContent = 'Mensagem enviada. Obrigado! Entraremos em contato em breve.';
+              } else {
+                const json = await resp.json().catch(() => null);
+                status.textContent = (json && json.error) ? json.error : 'Erro ao enviar. Tente novamente mais tarde.';
+              }
+            } catch (err) {
+              status.textContent = 'Erro de rede ao enviar. Tente novamente.';
+            }
+          });
+        }
+
+        // Smooth scroll for anchor links that target IDs in this page
+        document.querySelectorAll('a[href^="#"]').forEach(a => {
+          a.addEventListener('click', (ev) => {
+            const href = a.getAttribute('href');
+            if (!href || href === '#') return;
+            const target = document.querySelector(href);
+            if (!target) return;
+            // Allow default if user prefers reduced motion
+            if (window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+            ev.preventDefault();
+            target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+          });
+        });
       });
     </script>
   </body>
